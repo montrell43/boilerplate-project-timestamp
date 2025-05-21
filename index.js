@@ -58,13 +58,18 @@ app.get("/api/:date?", function (req, res) {
 });
 
 
-app.get("/api/whoami", function (req, res) {
+aapp.get("/api/whoami", function (req, res) {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
+  // If IPv6 format ::ffff:127.0.0.1, strip ::ffff:
+  const ipaddress = ip.includes('::ffff:') ? ip.split('::ffff:')[1] : ip;
+
   res.json({
-    ipaddress: req.ip,
+    ipaddress: ipaddress,
     language: req.headers["accept-language"],
     software: req.headers["user-agent"]
   });
 });
+
 
 
 // Listen on port set in environment variable or default to 3000
