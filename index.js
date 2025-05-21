@@ -59,16 +59,21 @@ app.get("/api/:date?", function (req, res) {
 
 
 app.get("/api/whoami", function (req, res) {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
-  // If IPv6 format ::ffff:127.0.0.1, strip ::ffff:
-  const ipaddress = ip.includes('::ffff:') ? ip.split('::ffff:')[1] : ip;
+  let ip = req.header('x-forwarded-for') || req.connection.remoteAddress || req.socket.remoteAddress || (req.connection.socket ? req.connection.socket.remoteAddress : null);
+  if (ip && ip.indexOf(',') > -1) {
+    ip = ip.slice(0, ip.indexOf(','));
+  }
+
+  let lang = req.header('accept-language');
+  let sysInfo = req.get('user-agent');
 
   res.json({
-    ipaddress: ipaddress,
-    language: req.headers["accept-language"],
-    software: req.headers["user-agent"]
+    ipaddress: ip,
+    language: lang,
+    software: sysInfo
   });
 });
+
 
 
 
