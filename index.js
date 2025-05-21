@@ -60,7 +60,13 @@ app.get("/api/:date?", function (req, res) {
 
 app.get("/api/whoami", function (req, res) {
   let ip = req.header('x-forwarded-for') || req.connection.remoteAddress || req.socket.remoteAddress || (req.connection.socket ? req.connection.socket.remoteAddress : null);
-  
+  if (ip && ip.indexOf(',') > -1) {
+    ip = ip.slice(0, ip.indexOf(','));
+  }
+
+  let lang = req.header('accept-language');
+  let sysInfo = req.get('user-agent')
+
   res.json({
     ipaddress: ip,
     language: lang,
