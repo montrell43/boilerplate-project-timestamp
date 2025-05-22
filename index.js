@@ -1,32 +1,31 @@
 // index.js
 // where your node app starts
 // init project
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
+const cors = require('cors');
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC 
 
 app.set('trust proxy', true);
 
-
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-const cors = require('cors');
 app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (req, res) {
+app.get("/",  (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
+app.get("/api/hello", (req, res) => {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date?", function (req, res) {
+app.get("/api/:date?", (req, res) => {
   const dateParam = req.params.date;
 
   // No date provided — return current time
@@ -41,7 +40,7 @@ app.get("/api/:date?", function (req, res) {
   let date;
 
   // Check if it's a valid UNIX timestamp (e.g. 1451001600000)
-  if (!isNaN(dateParam) && /^\d+$/.test(dateParam)) {
+  if (/^\d+$/.test(dateParam)) {
     date = new Date(parseInt(dateParam));
   } else {
     date = new Date(dateParam);
@@ -58,10 +57,11 @@ app.get("/api/:date?", function (req, res) {
 });
 
 
-app.get("/api/whoami", function (req, res) {
-  let ip = req.header('x-forwarded-for') || req.connection.remoteAddress || req.socket.remoteAddress || (req.connection.socket ? req.connection.socket.remoteAddress : null);
-  if (ip && ip.indexOf(',') > -1) {
-    ip = ip.slice(0, ip.indexOf(','));
+app.get('/api/whoami', (req, res) => {
+  // Grab IP address
+  let ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  if (ipaddress && ipaddress.includes(',')) {
+    ipaddress = ipaddress.split(',')[0];
   }
 
   let lang = req.header('accept-language');
