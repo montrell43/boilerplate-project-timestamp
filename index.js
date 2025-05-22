@@ -4,6 +4,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const whoamiParam = req.params.whoami
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 
@@ -21,40 +22,42 @@ app.get("/",  (req, res) => {
 
 
 // your first API endpoint... 
-app.get("/api/hello", (req, res) => {
-  res.json({greeting: 'hello API'});
+app.get("/api/whoami", (req, res) => {
+  res.json({ language: req.headers["accept-language"],
+    software: req.headers["user-agent"], 
+    ipaddress: req.headers["x-forwarded-for"] });
 });
 
-app.get("/api/:date?", (req, res) => {
-  const dateParam = req.params.date;
+// app.get("/api/:date?", (req, res) => {
+//   const dateParam = req.params.date;
 
   // No date provided — return current time
-  if (!dateParam) {
-    const now = new Date();
-    return res.json({
-      unix: now.getTime(),
-      utc: now.toUTCString()
-    });
-  }
+  // if (!dateParam) {
+  //   const now = new Date();
+  //   return res.json({
+  //     unix: now.getTime(),
+  //     utc: now.toUTCString()
+  //   });
+  // }
 
-  let date;
+  // let date;
 
   // Check if it's a valid UNIX timestamp (e.g. 1451001600000)
-  if (/^\d+$/.test(dateParam)) {
-    date = new Date(parseInt(dateParam));
-  } else {
-    date = new Date(dateParam);
-  }
+//   if (/^\d+$/.test(dateParam)) {
+//     date = new Date(parseInt(dateParam));
+//   } else {
+//     date = new Date(dateParam);
+//   }
 
-  if (date.toString() === "Invalid Date") {
-    return res.json({ error: "Invalid Date" });
-  }
+//   if (date.toString() === "Invalid Date") {
+//     return res.json({ error: "Invalid Date" });
+//   }
 
-  return res.json({
-    unix: date.getTime(),
-    utc: date.toUTCString()
-  });
-});
+//   return res.json({
+//     unix: date.getTime(),
+//     utc: date.toUTCString()
+//   });
+// });
 
 
 app.get('/api/whoami', (req, res) => {
@@ -62,7 +65,7 @@ app.get('/api/whoami', (req, res) => {
   let ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   let lang = req.header('accept-language');
   let sysInfo = req.get('user-agent')
-    const whoamiParam = req.params.whoami; 
+    ; 
   if (ipaddress && ipaddress.includes(',')) {
     ipaddress = ipaddress.split(',')[0];
   }
