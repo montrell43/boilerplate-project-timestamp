@@ -62,6 +62,7 @@ app.get('/api/whoami', (req, res) => {
   let ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   let lang = req.header('accept-language');
   let sysInfo = req.get('user-agent')
+    const whoamiParam = req.params.whoami; 
   if (ipaddress && ipaddress.includes(',')) {
     ipaddress = ipaddress.split(',')[0];
   }
